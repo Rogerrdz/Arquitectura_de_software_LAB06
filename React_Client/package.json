@@ -1,8 +1,9 @@
 {
-  "name": "blueprints-react-lab",
-  "version": "0.1.0",
+  "name": "arsw-labs-monorepo",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
+  "description": "Monorepo ARSW - BluePrints (React + Spring Boot) + Inmortals + wait_notify",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -10,7 +11,20 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest --run",
-    "test:ui": "vitest"
+    "test:ui": "vitest",
+    "test:coverage": "vitest --coverage",
+    "backend:compile": "cd BluePrints && mvn compile",
+    "backend:test": "cd BluePrints && mvn test",
+    "backend:run": "cd BluePrints && mvn spring-boot:run",
+    "backend:postgres": "cd BluePrints && mvn spring-boot:run -Dspring-boot.run.profiles=postgres",
+    "docker:up": "cd BluePrints && docker-compose up -d",
+    "docker:down": "cd BluePrints && docker-compose down",
+    "docker:logs": "cd BluePrints && docker-compose logs -f",
+    "inmortals:run": "cd Inmortals && mvn exec:java -Dexec.mainClass=edu.eci.arsw.app.Main",
+    "wait-notify:run": "cd wait_notify && mvn exec:java -Dexec.mainClass=edu.eci.arsw.pc.PCApp",
+    "test:all": "npm test && cd BluePrints && mvn test",
+    "clean": "rm -rf node_modules dist coverage && cd BluePrints && mvn clean",
+    "setup": "npm install && cd BluePrints && mvn install -DskipTests"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.0",

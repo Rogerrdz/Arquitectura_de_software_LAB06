@@ -1,15 +1,16 @@
 package edu.eci.arsw.blueprints.persistence;
 
-import edu.eci.arsw.blueprints.model.Blueprint;
-import edu.eci.arsw.blueprints.model.Point;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import edu.eci.arsw.blueprints.model.Blueprint;
+import edu.eci.arsw.blueprints.model.Point;
 
 /**
  * PostgreSQL-based implementation of BlueprintPersistence using JPA.
@@ -61,5 +62,20 @@ public class PostgresBlueprintPersistence implements BlueprintPersistence {
         Blueprint bp = getBlueprint(author, name);
         bp.addPoint(new Point(x, y));
         repository.save(bp);
+    }
+
+    @Override
+    @Transactional
+    public void updateBlueprint(String author, String name, Blueprint bp) throws BlueprintNotFoundException {
+        Blueprint existing = getBlueprint(author, name);
+        existing.setPoints(bp.getPoints());
+        repository.save(existing);
+    }
+
+    @Override
+    @Transactional
+    public void deleteBlueprint(String author, String name) throws BlueprintNotFoundException {
+        Blueprint bp = getBlueprint(author, name);
+        repository.delete(bp);
     }
 }

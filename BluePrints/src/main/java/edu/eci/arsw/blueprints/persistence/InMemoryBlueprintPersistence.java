@@ -1,13 +1,17 @@
 package edu.eci.arsw.blueprints.persistence;
 
-import edu.eci.arsw.blueprints.model.Blueprint;
-import edu.eci.arsw.blueprints.model.Point;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
+import edu.eci.arsw.blueprints.model.Blueprint;
+import edu.eci.arsw.blueprints.model.Point;
 
 @Repository
 @Profile("!postgres")
@@ -16,13 +20,13 @@ public class InMemoryBlueprintPersistence implements BlueprintPersistence {
     private final Map<String, Blueprint> blueprints = new ConcurrentHashMap<>();
 
     public InMemoryBlueprintPersistence() {
-        // Sample data 1:1 style (author/name key)
+        // Sample data with visible coordinates (canvas is 520x360)
         Blueprint bp1 = new Blueprint("john", "house",
-                List.of(new Point(0,0), new Point(10,0), new Point(10,10), new Point(0,10)));
+                List.of(new Point(50,50), new Point(250,50), new Point(250,200), new Point(50,200), new Point(50,50)));
         Blueprint bp2 = new Blueprint("john", "garage",
-                List.of(new Point(5,5), new Point(15,5), new Point(15,15)));
+                List.of(new Point(100,80), new Point(300,80), new Point(300,180), new Point(100,180), new Point(100,80)));
         Blueprint bp3 = new Blueprint("jane", "garden",
-                List.of(new Point(2,2), new Point(3,4), new Point(6,7)));
+                List.of(new Point(80,100), new Point(200,60), new Point(280,150), new Point(150,220), new Point(80,100)));
         blueprints.put(keyOf(bp1), bp1);
         blueprints.put(keyOf(bp2), bp2);
         blueprints.put(keyOf(bp3), bp3);
@@ -63,5 +67,23 @@ public class InMemoryBlueprintPersistence implements BlueprintPersistence {
     public void addPoint(String author, String name, int x, int y) throws BlueprintNotFoundException {
         Blueprint bp = getBlueprint(author, name);
         bp.addPoint(new Point(x, y));
+    }
+
+    @Override
+    public void updateBlueprint(String author, String name, Blueprint bp) throws BlueprintNotFoundException {
+        String key = author + ":" + name;
+        if (!blueprints.containsKey(key)) {
+            throw new BlueprintNotFoundException("Blueprint " + author + "/" + name + " not found");
+        }
+        blueprints.put(key, bp);
+    }
+
+    @Override
+    public void deleteBlueprint(String author, String name) throws BlueprintNotFoundException {
+        String key = author + ":" + name;
+        if (!blueprints.containsKey(key)) {
+            throw new BlueprintNotFoundException("Blueprint " + author + "/" + name + " not found");
+        }
+        blueprints.remove(key);
     }
 }

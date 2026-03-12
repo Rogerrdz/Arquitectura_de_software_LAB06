@@ -1,7 +1,8 @@
 package edu.eci.arsw.blueprints.model;
 
-import jakarta.persistence.Embeddable;
 import java.util.Objects;
+
+import jakarta.persistence.Embeddable;
 
 @Embeddable
 public class Point {
@@ -15,6 +16,11 @@ public class Point {
         this.y = y;
     }
 
+    // JavaBeans-style getters for JSON serialization
+    public int getX() { return x; }
+    public int getY() { return y; }
+    
+    // Record-style accessors (for compatibility)
     public int x() { return x; }
     public int y() { return y; }
 

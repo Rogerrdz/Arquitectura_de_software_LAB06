@@ -67,13 +67,10 @@ export default function LoginPage() {
         </div>
       </div>
       {error && <p style={{ color: '#f87171' }}>{error}</p>}
-      {success && <p style={{ color: '#4ade80' }}>✅ Login exitoso! Redirigiendo...</p>}
+      {success && <p style={{ color: '#4ade80' }}>Login exitoso! Redirigiendo...</p>}
       <button className="btn primary" style={{ marginTop: 12 }}>
         Ingresar
       </button>
-      <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#666' }}>
-        💡 Tip: En modo mock, cualquier usuario/contraseña funciona
-      </p>
     </form>
   )
 }

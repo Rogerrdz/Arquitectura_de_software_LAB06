@@ -128,16 +128,16 @@ const create = async (blueprint) => {
 const apimock = {
   get: async (url) => {
     // Parse URL and route to appropriate function
-    if (url === '/blueprints') {
+    if (url === '/v1/blueprints') {
       return getAll()
     }
-    // Match: /blueprints/{author}
-    const authorMatch = url.match(/^\/blueprints\/([^/]+)$/)
+    // Match: /v1/blueprints/{author}
+    const authorMatch = url.match(/^\/v1\/blueprints\/([^/]+)$/)
     if (authorMatch) {
       return getByAuthor(decodeURIComponent(authorMatch[1]))
     }
-    // Match: /blueprints/{author}/{name}
-    const blueprintMatch = url.match(/^\/blueprints\/([^/]+)\/([^/]+)$/)
+    // Match: /v1/blueprints/{author}/{name}
+    const blueprintMatch = url.match(/^\/v1\/blueprints\/([^/]+)\/([^/]+)$/)
     if (blueprintMatch) {
       return getByAuthorAndName(
         decodeURIComponent(blueprintMatch[1]),
@@ -147,7 +147,7 @@ const apimock = {
     throw new Error(`Unknown mock URL: ${url}`)
   },
   post: async (url, data) => {
-    if (url === '/blueprints') {
+    if (url === '/v1/blueprints') {
       return create(data)
     }
     // Mock login endpoint
@@ -165,6 +165,39 @@ const apimock = {
           message: 'Login successful (mock)',
         },
       }
+    }
+    throw new Error(`Unknown mock URL: ${url}`)
+  },
+  put: async (url, data) => {
+    // Match: /v1/blueprints/{author}/{name}
+    const blueprintMatch = url.match(/^\/v1\/blueprints\/([^/]+)\/([^/]+)$/)
+    if (blueprintMatch) {
+      const author = decodeURIComponent(blueprintMatch[1])
+      const name = decodeURIComponent(blueprintMatch[2])
+      const found = mockBlueprints.find((bp) => bp.author === author && bp.name === name)
+      if (!found) {
+        throw new Error(`Blueprint not found: ${author}/${name}`)
+      }
+      // Update points
+      found.points = data.points || []
+      await delay()
+      return { data: found }
+    }
+    throw new Error(`Unknown mock URL: ${url}`)
+  },
+  delete: async (url) => {
+    // Match: /v1/blueprints/{author}/{name}
+    const blueprintMatch = url.match(/^\/v1\/blueprints\/([^/]+)\/([^/]+)$/)
+    if (blueprintMatch) {
+      const author = decodeURIComponent(blueprintMatch[1])
+      const name = decodeURIComponent(blueprintMatch[2])
+      const index = mockBlueprints.findIndex((bp) => bp.author === author && bp.name === name)
+      if (index === -1) {
+        throw new Error(`Blueprint not found: ${author}/${name}`)
+      }
+      mockBlueprints.splice(index, 1)
+      await delay()
+      return { data: { success: true } }
     }
     throw new Error(`Unknown mock URL: ${url}`)
   },
