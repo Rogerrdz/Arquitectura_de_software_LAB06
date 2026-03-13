@@ -90,13 +90,31 @@ cd React_Client
 npm install
 ```
 
-Si no tienes `.env`, crealo tomando como base `.env.example`.
+Si no tienes `.env`, crealo tomando como base `.env.example`:
+
+- Linux/macOS (bash):
+
+```bash
+cp .env.example .env
+```
+
+- Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
 
 Valores recomendados para consumir el backend real:
 
 ```env
 VITE_API_BASE_URL=http://localhost:8081/api
 VITE_USE_MOCK=false
+```
+
+Si quieres probar solo frontend sin levantar backend, usa modo mock:
+
+```env
+VITE_USE_MOCK=true
 ```
 
 Inicia el frontend:
@@ -166,6 +184,8 @@ cd React_Client
 npm test
 ```
 
+Nota: las pruebas unitarias del frontend pueden correr sin backend porque usan mocks.
+
 Tambien puedes validar visualmente:
 
 1. Login exitoso.
@@ -176,6 +196,8 @@ Tambien puedes validar visualmente:
 
 ## 10. Endpoints principales
 
+Nota de versionado: en este repo la ruta vigente es `/api/v1/blueprints`. Si en alguna documentacion antigua ves `/api/blueprints`, toma este README principal como referencia oficial.
+
 - `GET /api/v1/blueprints`
 - `GET /api/v1/blueprints/{author}`
 - `GET /api/v1/blueprints/{author}/{bpname}`
@@ -185,7 +207,12 @@ Tambien puedes validar visualmente:
 - `DELETE /api/v1/blueprints/{author}/{bpname}`
 - `POST /api/auth/login`
 
-## 11. Troubleshooting rapido
+## 11. Documentacion complementaria
+
+- `React_Client/README.md`: guia del laboratorio frontend.
+- `React_Client/README_MAIN.md`: guia detallada del monorepo/frontend.
+
+## 12. Troubleshooting rapido
 
 - Si el frontend no conecta:
   - Verifica que backend este en `http://localhost:8081`.
